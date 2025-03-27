@@ -1,0 +1,22 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card shadow-lg p-4 text-center" style="max-width: 450px;">
+        <div class="mb-3">
+            <i class="fas fa-envelope-circle-check fa-3x text-primary"></i>
+        </div>
+        <h2 class="text-primary">Verifica tu correo</h2>
+        <p class="mt-3">Hemos enviado un enlace de confirmación a tu correo electrónico.</p>
+        <p>Por favor, revisa tu bandeja de entrada y sigue las instrucciones para activar tu cuenta.</p>
+        <p class="text-muted small">
+            Si no ves el correo, revisa la carpeta de spam o intenta reenviarlo desde la página de inicio.
+        </p>
+        <div class="mt-4">
+            <a href="{% url 'usuarios:login' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Ir al inicio de sesión
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
