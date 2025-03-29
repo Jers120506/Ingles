@@ -1,0 +1,87 @@
+{% extends "usuarios/base.html" %}
+
+{% block title %}Mis Cursos{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Mis Cursos</h2>
+
+    {% if cursos %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for curso in cursos %}
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        <!-- Imagen del curso (Se muestra solo si el curso tiene una imagen) -->
+                        {% if curso.imagen %}
+                            <img src="{{ curso.imagen.url }}" class="card-img-top rounded" alt="Imagen de {{ curso.nombre }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x150" class="card-img-top rounded" alt="Curso sin imagen">
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ curso.nombre }}</h5>
+                            <p class="card-text text-truncate" title="{{ curso.descripcion }}" data-bs-toggle="tooltip">
+                                {{ curso.descripcion }}
+                            </p>
+
+                            <div class="mt-auto d-grid gap-2">
+                                <a href="{% url 'cursos:detalle_curso' curso.id %}" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-eye fa-fw"></i> Ver Detalles
+                                </a>
+
+                                <!-- Botón de eliminación con Modal de confirmación -->
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#eliminarCursoModal{{ curso.id }}">
+                                    <i class="fa-solid fa-trash fa-fw"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de Confirmación para Eliminar -->
+                <div class="modal fade" id="eliminarCursoModal{{ curso.id }}" tabindex="-1" aria-labelledby="eliminarCursoLabel{{ curso.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title"><i class="fa-solid fa-triangle-exclamation"></i> Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <p>¿Estás seguro de que deseas eliminar el curso <strong class="text-danger">{{ curso.nombre }}</strong>?</p>
+                                <p class="text-muted">Esta acción no se puede deshacer.</p>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fa-solid fa-xmark"></i> Cancelar
+                                </button>
+                                <form action="{% url 'cursos:eliminar_curso' curso.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa-solid fa-trash"></i> Sí, eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center" role="alert">
+            <i class="fa-solid fa-info-circle"></i> No has creado ningún curso aún.  
+            <a href="{% url 'cursos:crear_curso' %}" class="alert-link">¡Crea uno aquí!</a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Activar Tooltips de Bootstrap -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+{% endblock %}

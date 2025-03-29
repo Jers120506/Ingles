@@ -1,0 +1,68 @@
+{% extends "usuarios/base.html" %}
+
+{% block title %}{{ curso.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0"><i class="fa-solid fa-graduation-cap"></i> {{ curso.nombre }}</h2>
+        </div>
+        <div class="card-body">
+            <p class="text-muted fs-5 text-center"><i class="fa-solid fa-quote-left"></i> {{ curso.descripcion }} <i class="fa-solid fa-quote-right"></i></p>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+                {% if user.rol == 'profesor' %}
+                <a href="{% url 'cursos:editar_curso' curso.pk %}" class="btn btn-warning">
+                    <i class="fa-solid fa-edit"></i> Editar Curso
+                </a>
+                <a href="{% url 'cursos:mis_cursos' %}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a mis cursos
+                </a>
+                {% else %}
+                <a href="{% url 'cursos:ver_cursos' %}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> Volver a los cursos
+                </a>
+                {% endif %}
+            </div>
+
+            <h4 class="mb-3"><i class="fa-solid fa-book"></i> Lecciones</h4>
+            {% if lecciones %}
+                <ol class="list-group list-group-numbered">
+                    {% for leccion in lecciones %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold"><i class="fa-solid fa-file-alt"></i> {{ leccion.titulo }}</span>
+                                <p class="text-muted small m-0"><i class="fa-solid fa-align-left"></i> {{ leccion.descripcion }}</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'cursos:detalle_leccion' leccion.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-eye"></i> Ver
+                                </a>
+                                {% if user.rol == 'profesor' %}
+                                <a href="{% url 'cursos:editar_leccion' curso.pk leccion.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-pencil-alt"></i> Editar
+                                </a>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ol>
+            {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="fa-solid fa-circle-info fa-2x mb-2"></i>
+                    <p class="mb-0">Aún no hay lecciones en este curso.</p>
+                </div>
+            {% endif %}
+            
+            {% if user.rol == 'profesor' %}
+            <div class="d-grid mt-4">
+                <a href="{% url 'cursos:crear_leccion' curso.pk %}" class="btn btn-success">
+                    <i class="fa-solid fa-plus"></i> Crear Lección
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
