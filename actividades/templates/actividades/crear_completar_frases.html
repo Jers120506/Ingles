@@ -1,0 +1,88 @@
+{% extends 'usuarios/base.html' %}
+
+{% block title %}Crear Actividad - Completar Frases{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0"><i class="fa-solid fa-pen-to-square"></i> Crear Actividad - Completar Frases</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="titulo" class="form-label"><strong>Título de la Evaluación:</strong></label>
+                    <input type="text" class="form-control" name="titulo" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label"><strong>Descripción (Opcional):</strong></label>
+                    <textarea class="form-control" name="descripcion"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Oraciones con Espacios en Blanco:</strong></label>
+                    <small class="form-text text-muted d-block mb-2">
+                        Escribe una oración y usa <code>[...]</code> para marcar los espacios que deben completarse.  
+                        Luego, agrega las respuestas correctas.
+                    </small>
+                    
+                    <div id="preguntas-container">
+                        <div class="card p-3 mb-3 border shadow-sm">
+                            <label class="form-label">Oración:</label>
+                            <input type="text" class="form-control mb-2" name="preguntas[]" placeholder="Ejemplo: Mi perro es muy [...] y cariñoso." required>
+                            
+                            <label class="form-label">Respuestas correctas:</label>
+                            <input type="text" class="form-control mb-2" name="respuestas[]" placeholder="Ejemplo: juguetón, amigable" required>
+                            
+                            <button type="button" class="btn btn-danger btn-sm remove-question">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-secondary mt-2" id="add-question">
+                        <i class="fa-solid fa-plus-circle"></i> Añadir otra oración
+                    </button>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Guardar Actividad</button>
+                    <a href="{% url 'cursos:detalle_leccion' leccion.pk %}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("add-question").addEventListener("click", function() {
+    let container = document.getElementById("preguntas-container");
+    let div = document.createElement("div");
+    div.classList.add("card", "p-3", "mb-3", "border", "shadow-sm");
+    
+    div.innerHTML = `
+        <label class="form-label">Oración:</label>
+        <input type="text" class="form-control mb-2" name="preguntas[]" placeholder="Ejemplo: Mi perro es muy [...] y cariñoso." required>
+        
+        <label class="form-label">Respuestas correctas:</label>
+        <input type="text" class="form-control mb-2" name="respuestas[]" placeholder="Ejemplo: juguetón, amigable" required>
+        
+        <button type="button" class="btn btn-danger btn-sm remove-question">
+            <i class="fa-solid fa-trash"></i> Eliminar
+        </button>
+    `;
+    
+    container.appendChild(div);
+});
+
+document.addEventListener("click", function(event) {
+    if (event.target.classList.contains("remove-question")) {
+        event.target.closest(".card").remove();
+    }
+});
+</script>
+
+{% endblock %}

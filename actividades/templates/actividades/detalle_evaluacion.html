@@ -1,0 +1,81 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">{{ evaluacion.titulo }}</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>Descripción:</strong> {{ evaluacion.descripcion }}</p>
+            <p><strong>Fecha de creación:</strong> {{ evaluacion.fecha_creacion }}</p>
+            
+            {% if user.rol == "profesor" %}
+                <h4 class="mt-4">Preguntas</h4>
+
+                <!-- Preguntas de opción múltiple -->
+                {% if preguntas_opcion_multiple %}
+                    <h5 class="mt-3">Preguntas de opción múltiple</h5>
+                    {% for pregunta in preguntas_opcion_multiple %}
+                        <div class="card mb-3">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0">{{ pregunta.texto }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for opcion in pregunta.opciones.all %}
+                                        <li class="list-group-item">
+                                            {{ opcion.texto }}
+                                            {% if opcion.es_correcta %}
+                                                <span class="badge bg-success">Correcta</span>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Preguntas de completar frases -->
+                {% if preguntas_completar_frase %}
+                    <h5 class="mt-3">Preguntas de completar frases</h5>
+                    {% for pregunta in preguntas_completar_frase %}
+                        <div class="card mb-3">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">{{ pregunta.texto }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Espacios a completar:</strong></p>
+                                <ul class="list-group">
+                                    {% for respuesta in pregunta.respuestas.all %}
+                                        <li class="list-group-item">
+                                            <strong>Posición {{ respuesta.posicion }}:</strong> 
+                                            {{ respuesta.respuesta_correcta }}
+                                            {% if respuesta.alternativas %}
+                                                <br><small class="text-muted">Alternativas: {{ respuesta.alternativas }}</small>
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if not preguntas_opcion_multiple and not preguntas_completar_frase %}
+                    <p>No hay preguntas en esta evaluación.</p>
+                {% endif %}
+            {% endif %}
+
+            <div class="mt-3">
+                {% if user.rol == "estudiante" %}
+                    <a href="{% url 'actividades:resolver_actividad' evaluacion.pk %}" class="btn btn-success">Iniciar Evaluación</a>
+                {% endif %}
+                <a href="{% url 'cursos:detalle_leccion' evaluacion.leccion.id %}" class="btn btn-secondary">Volver a la Lección</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

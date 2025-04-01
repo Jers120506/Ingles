@@ -1,0 +1,42 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Cursos Disponibles</h2>
+    <hr>
+
+    {% if cursos %}
+        <div class="row">
+            {% for curso in cursos %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-lg">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ curso.nombre }}</h4>
+                            <p class="card-text text-muted">{{ curso.descripcion }}</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'cursos:detalle_curso' curso.pk %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> Ver detalles
+                                </a>
+                                
+                                {% if user.rol == 'estudiante' %}
+                                    {% if curso.id in inscritos %}
+                                        <button class="btn btn-secondary" disabled>Inscrito</button>
+                                    {% else %}
+                                        <form method="post" action="{% url 'inscripciones:inscribirse_curso' curso.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary">Inscribirse</button>
+                                        </form>                                    
+                                    {% endif %}
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center">No hay cursos disponibles en este momento.</p>
+    {% endif %}
+</div>
+{% endblock %}

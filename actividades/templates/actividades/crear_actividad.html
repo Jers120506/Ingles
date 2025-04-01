@@ -1,0 +1,69 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Crear Evaluación</h2>
+
+
+    <form method="post" id="evaluacion-form">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="titulo" class="form-label">Título</label>
+            <input type="text" name="titulo" id="titulo" class="form-control" value="{{ evaluacion.titulo }}">
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ evaluacion.descripcion }}</textarea>
+        </div>
+
+        <input type="hidden" name="num_preguntas" id="num_preguntas" value="0">
+
+        <div id="preguntas-container"></div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="agregarPregunta()">Agregar Pregunta</button>
+        <button type="submit" class="btn btn-success mt-3">Guardar Evaluación</button>
+    </form>
+</div>
+
+<script>
+    let preguntaIndex = 0;
+
+    function agregarPregunta() {
+        const preguntasContainer = document.getElementById("preguntas-container");
+        const numPreguntasInput = document.getElementById("num_preguntas");
+
+        let preguntaDiv = document.createElement("div");
+        preguntaDiv.classList.add("pregunta-box", "mb-4", "p-3", "border", "rounded");
+        preguntaDiv.innerHTML = `
+            <label class="form-label">Pregunta</label>
+            <input type="text" name="pregunta_${preguntaIndex}" class="form-control" required>
+            <input type="hidden" name="num_opciones_${preguntaIndex}" id="num_opciones_${preguntaIndex}" value="0">
+            <div id="opciones-container-${preguntaIndex}" class="mt-2"></div>
+            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="agregarOpcion(${preguntaIndex})">Agregar Opción</button>
+        `;
+        
+        preguntasContainer.appendChild(preguntaDiv);
+        preguntaIndex++;
+        numPreguntasInput.value = preguntaIndex;
+    }
+
+    function agregarOpcion(preguntaIdx) {
+        const opcionesContainer = document.getElementById(`opciones-container-${preguntaIdx}`);
+        const numOpcionesInput = document.getElementById(`num_opciones_${preguntaIdx}`);
+        let opcionIndex = parseInt(numOpcionesInput.value);
+
+        let opcionDiv = document.createElement("div");
+        opcionDiv.classList.add("opcion-box", "mb-2", "p-2", "border", "rounded");
+        opcionDiv.innerHTML = `
+            <input type="text" name="opcion_${preguntaIdx}_${opcionIndex}" class="form-control" required>
+            <input type="checkbox" name="correcta_${preguntaIdx}_${opcionIndex}">
+            <label>Es correcta</label>
+        `;
+
+        opcionesContainer.appendChild(opcionDiv);
+        opcionIndex++;
+        numOpcionesInput.value = opcionIndex;
+    }
+</script>
+{% endblock %}
