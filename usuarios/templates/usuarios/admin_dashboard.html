@@ -1,0 +1,18 @@
+{% extends 'usuarios/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Panel de Administrador</h2>
+    <hr>
+    <div class="row">
+        <!-- Gestión de Usuarios -->
+        <div class="col-md-6">
+            <div class="card p-4 shadow text-center">
+                <h4>Gestión de Usuarios</h4>
+                <p>Registra, edita o elimina usuarios.</p>
+                <a href="{% url 'usuarios:Gestionusuarios' %}" class="btn btn-primary w-100">Ir a Usuarios</a>
+            </div>
+        </div>        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma para aprendizaje de idiomas. Conéctate con profesores y estudiantes.">
+    <meta name="keywords" content="aprendizaje, idiomas, cursos, profesores, estudiantes">
+    <title>{% block title %}EnglishLearn{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'usuarios:perfil' %}">
+                <i class="fa-solid fa-graduation-cap"></i> EnglishLearn
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuarios:perfil' %}">
+                                <i class="fa-solid fa-user"></i> Perfil
+                            </a>
+                        </li>
+                        {% if user.rol == 'administrador' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'usuarios:admin_dashboard' %}">
+                                    <i class="fa-solid fa-book"></i> Panel de Administrador
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if user.rol == 'profesor' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'cursos:crear_curso' %}">
+                                    <i class="fa-solid fa-plus-circle"></i> Crear Curso
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'cursos:mis_cursos' %}">
+                                    <i class="fa-solid fa-book"></i> Mis Cursos
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'cursos:ver_cursos' %}">
+                                    <i class="fa-solid fa-book"></i> Ver Cursos
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{% url 'usuarios:logout' %}">
+                                <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuarios:login' %}">
+                                <i class="fa-solid fa-sign-in-alt"></i> Iniciar sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="{% url 'usuarios:registro' %}">
+                                <i class="fa-solid fa-user-plus"></i> Registrarse
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido dinámico -->
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center mt-4 py-3 bg-dark text-white container-fluid">
+        <p class="mb-0">&copy; 2025 Mi Plataforma. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
